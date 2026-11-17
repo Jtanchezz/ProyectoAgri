@@ -46,14 +46,12 @@ test('el único index.html funciona fuera del repositorio y sin internet', async
     images.forEach(img=>img.loading='eager');
     await Promise.all(images.map(img=>img.decode()));
   });
-  await page.locator('#transaction-value').fill('2000');
-  await page.locator('#transaction-value').press('Tab');
-  await expect(page.locator('#comparison')).toContainText('Q2,500');
   await page.locator('#screen-tab-market').click();
   await expect(page.locator('#market-results .product-card')).toHaveCount(2);
   await page.locator('#market-results img').evaluateAll(images=>Promise.all(images.map(img=>img.decode())));
-  await page.locator('#growth-tab').click();
-  await expect(page.locator('#projections')).toContainText('80,000');
+  await page.locator('[data-filter="Tubérculos"]').click();
+  await expect(page.locator('#market-results .product-card')).toHaveCount(1);
+  await expect(page.locator('#market-results')).toContainText('Papa blanca');
   expect(errors).toEqual([]);
 });
 
@@ -63,6 +61,8 @@ test('la portada, los recursos y las anclas cargan sin errores', async ({ page }
   await page.reload();
   await expect(page.getByRole('heading', { level:1 })).toContainText('Del campo');
   await expect(page.locator('.hero-visual img')).toBeVisible();
+  await expect(page.locator('#contexto, #impacto, #piloto, #modelo, #equipo, #fuentes')).toHaveCount(0);
+  await expect(page.getByRole('link', { name: 'Probar la app', exact: true })).toHaveAttribute('href', '#prototipo');
   await page.evaluate(() => document.fonts.ready);
   await page.locator('img').evaluateAll(async images => {
     images.forEach(img => img.loading='eager');
@@ -75,6 +75,7 @@ test('la portada, los recursos y las anclas cargan sin errores', async ({ page }
   expect(errors).toEqual([]);
   await page.screenshot({ path:'test-results/portada-escritorio.png' });
   await page.locator('#prototipo').screenshot({ path:'test-results/prototipo.png' });
+  await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
   await page.screenshot({ path:'test-results/escritorio.png', fullPage:true });
 });
 
@@ -89,21 +90,6 @@ test('servicios y navegación por teclado', async ({ page }) => {
   await expect(page.locator('#service-panel')).toContainText('Más tiempo fresco');
   await page.locator('[data-open-screen="cold"]').click();
   await expect(page.locator('#cold-form')).toBeVisible();
-});
-
-test('el simulador mantiene cifras y proporciones correctas', async ({ page }) => {
-  await expect(page.locator('#comparison')).toContainText('Q1,250');
-  await expect(page.locator('#comparison')).toContainText('Q1,600');
-  await page.locator('#transaction-value').fill('2000');
-  await page.locator('#transaction-value').press('Tab');
-  await expect(page.locator('#comparison')).toContainText('Q2,500');
-  await expect(page.locator('#comparison')).toContainText('Q3,600');
-  await expect(page.locator('#comparison')).toContainText('Q3,200');
-  await expect(page.locator('#comparison')).toContainText('Q400');
-  await page.locator('#transaction-value').fill('30000');
-  await page.locator('#transaction-value').press('Tab');
-  await expect(page.locator('#transaction-value')).toHaveValue('20000');
-  await expect(page.locator('#comparison')).toContainText('Q25,000');
 });
 
 test('el catálogo filtra y prepara pedidos sin compras reales', async ({ page }) => {
@@ -157,16 +143,6 @@ test('Cold valida campos y muestra la solicitud correcta', async ({ page }) => {
   await expect(page.locator('#dialog-body')).toContainText('7 días');
   await expect(page.locator('#dialog-body')).toContainText('Sacatepéquez');
   await expect(page.locator('#dialog-body')).toContainText('No se ha reservado');
-});
-
-test('las proyecciones cambian de vista sin inventar metas faltantes', async ({ page }) => {
-  await expect(page.locator('#projections')).toContainText('2,000 M');
-  await page.locator('#growth-tab').click();
-  await expect(page.locator('#projections')).toContainText('80,000');
-  await expect(page.locator('#projections')).toContainText('25,000');
-  await expect(page.locator('#projections')).toContainText('Por definir');
-  await page.locator('#finance-tab').click();
-  await expect(page.locator('#projections')).toContainText('96,000');
 });
 
 test('el contacto prepara un archivo sin transmitir los datos', async ({ page }) => {

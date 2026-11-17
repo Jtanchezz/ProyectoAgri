@@ -1,6 +1,8 @@
 # AgroLink Guatemala
 
-Sitio de una sola página con todo el frontend en `index.html`: contenido, CSS, JavaScript, favicon, fotografías y tipografías. No necesita Vite, compilación, carpetas de recursos ni conexión a internet para mostrar el diseño y usar las interacciones. Los enlaces bibliográficos sí requieren internet.
+Página de producto con portada, servicios, explicación de uso, mockup interactivo de la app y contacto. Todo el frontend está en `index.html`: contenido, CSS, JavaScript, favicon, fotografías y tipografías. No necesita Vite, compilación, carpetas de recursos ni conexión a internet para mostrar el diseño y usar las interacciones. Los enlaces de créditos fotográficos sí requieren internet.
+
+La página se centra en la experiencia del usuario. Se retiraron el modelo de negocio, presupuesto, proyecciones, entrevistas, hoja de ruta, análisis de competencia, estadísticas del trabajo escrito y estructura organizacional.
 
 ## Publicar en GitHub Pages
 
@@ -46,13 +48,12 @@ npm run preview
 ## Funcionalidades
 
 - Tres servicios con pestañas accesibles y navegación por teclado.
-- Simulador en quetzales: ingreso tradicional × 1.25 para el productor, precio tradicional × 1.8 y precio AgroLink × 1.6. Los márgenes cubren funciones distintas y no se presentan como beneficio neto de AgroLink.
+- Explicación breve de cómo publicar una cosecha, conectar con compradores y coordinar la entrega.
 - Prototipo móvil con Inicio, Market, Second Chance y Cold.
 - Catálogo con búsqueda, filtros, cálculo de pedidos y condición sanitaria explícita.
 - Vista previa de publicaciones de cosechas y solicitudes de refrigeración.
-- Alternancia entre proyecciones financieras y metas de usuarios.
 - Contacto con validación y descarga de una solicitud en texto.
-- Fuentes documentales enlazadas, navegación móvil y soporte para movimiento reducido.
+- Navegación móvil, créditos fotográficos y soporte para movimiento reducido.
 
 ## Alcance de la demostración
 
@@ -60,9 +61,7 @@ No se proporcionó un archivo Figma: las cuatro pantallas se implementaron a par
 
 No hay servidor de pedidos, registro de usuarios, cobros, disponibilidad en tiempo real ni recepción de contactos. Los formularios del prototipo muestran resúmenes locales. El formulario de interés genera un archivo descargable; no transmite ni almacena información personal. Para recibir solicitudes reales hay que conectar un destino autorizado y ajustar los mensajes de confirmación y privacidad.
 
-WhatsApp se presenta como canal complementario previsto. No se inventó un número de teléfono. Tampoco se asignaron cargos individuales a los fundadores, porque el encargo solo definió la estructura de roles.
-
-Las cifras financieras y el caso comparativo son hipótesis. El año 1 distingue productores registrados de productores activos; el año 3 no inventa una meta de usuarios. La brecha entre inversión e ingresos se identifica como ilustrativa y no como un cálculo contable auditado.
+WhatsApp se presenta como canal complementario previsto. No se inventó un número de teléfono. Los precios del catálogo sirven únicamente para explorar el mockup.
 
 ## Archivos
 
@@ -79,11 +78,11 @@ npm install
 npm test
 ```
 
-La configuración usa Google Chrome instalado (`channel: 'chrome'`). Las once pruebas usan un servidor estático en `/ProyectoAgri/`, verifican que no haya solicitudes de recursos externos, y comprueban una copia aislada de `index.html` sin conexión. También cubren anclas, teclado, cálculos, filtros, pedidos, formularios, proyecciones, descarga sin transmisión de datos y ausencia de desbordamiento horizontal a 320, 390, 768 y 1024 px. La portada también se comprueba a 1440 px. Las capturas quedan en `test-results/`.
+La configuración usa Google Chrome instalado (`channel: 'chrome'`). Las nueve pruebas usan un servidor estático en `/ProyectoAgri/`, verifican que no haya solicitudes de recursos externos y comprueban una copia aislada de `index.html` sin conexión. También cubren anclas, teclado, filtros, pedidos, formularios, descarga sin transmisión de datos y ausencia de desbordamiento horizontal a 320, 390, 768 y 1024 px. La portada también se comprueba a 1440 px. Las capturas quedan en `test-results/`.
 
 ## Fuentes y recursos visuales
 
-Las fuentes estadísticas y bibliográficas están enlazadas en el acordeón del pie de página. Se consultaron FAO, UNFPA, MAGA, MICOOPE, ProducePay y el artículo de Greg Satell. La proyección demográfica se enlaza a la reproducción de WPP 2024 en PopulationPyramid.
+El pie de página conserva únicamente los créditos fotográficos. Las referencias del trabajo escrito se retiraron junto con sus secciones.
 
 - Fotografía de cultivos en Guatemala: [AlimentAcción, Università degli Studi di Milano](https://lastatalenews.unimi.it/alimentaccion-verso-sicurezza-alimentare-comunita-rurali-indigene-maya). Uso documental para esta maqueta; confirmar derechos de publicación comercial antes de usarla en un sitio público. La institución no se presenta como aliada de AgroLink.
 - Mercado: [fotografía de Unsplash](https://images.unsplash.com/photo-1542838132-92c53300491e).
