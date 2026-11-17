@@ -1,6 +1,61 @@
 import { test, expect } from '@playwright/test';
+import { mkdtemp, copyFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { pathToFileURL } from 'node:url';
 
-test.beforeEach(async ({ page }) => { await page.goto('/'); });
+test.beforeEach(async ({ page }) => { await page.goto('./'); });
+
+test('Pages sirve el HTML sin compilación ni solicitudes de recursos externos', async ({ page }) => {
+  const requests=[];
+  page.on('request', request => requests.push({ url: request.url(), type: request.resourceType() }));
+  const response=await page.reload();
+  expect(response.status()).toBe(200);
+  await expect(page).toHaveURL(/\/ProyectoAgri\/$/);
+  await expect(page.locator('script[src], link[rel="stylesheet"]')).toHaveCount(0);
+  await page.evaluate(() => document.fonts.ready);
+  await page.locator('img').evaluateAll(async images => {
+    images.forEach(img => img.loading='eager');
+    await Promise.all(images.map(img=>img.decode()));
+  });
+  for (const service of ['second','cold','market']) {
+    await page.locator(`#tab-${service}`).click();
+    await page.locator('#service-panel img').evaluate(img=>img.decode());
+  }
+  for (const screen of ['market','second','cold','home']) {
+    await page.locator(`#screen-tab-${screen}`).click();
+    await page.locator('#phone-content img').evaluateAll(images=>Promise.all(images.map(img=>img.decode())));
+  }
+  expect(requests.filter(request=>/^https?:/.test(request.url))).toEqual([
+    {url:'http://127.0.0.1:4175/ProyectoAgri/',type:'document'},
+  ]);
+});
+
+test('el único index.html funciona fuera del repositorio y sin internet', async ({ page, context }) => {
+  const directory=await mkdtemp(join(tmpdir(),'agrolink-standalone-'));
+  const destination=join(directory,'index.html');
+  await copyFile(new URL('../index.html',import.meta.url),destination);
+  await context.setOffline(true);
+  const errors=[];
+  page.on('pageerror', error=>errors.push(error.message));
+  await page.goto(pathToFileURL(destination).href);
+  await expect(page.getByRole('heading',{level:1})).toContainText('Del campo');
+  await page.evaluate(() => document.fonts.ready);
+  expect(await page.evaluate(()=>document.fonts.check('16px "DM Sans"') && document.fonts.check('16px Fraunces'))).toBe(true);
+  await page.locator('img').evaluateAll(async images => {
+    images.forEach(img=>img.loading='eager');
+    await Promise.all(images.map(img=>img.decode()));
+  });
+  await page.locator('#transaction-value').fill('2000');
+  await page.locator('#transaction-value').press('Tab');
+  await expect(page.locator('#comparison')).toContainText('Q2,500');
+  await page.locator('#screen-tab-market').click();
+  await expect(page.locator('#market-results .product-card')).toHaveCount(2);
+  await page.locator('#market-results img').evaluateAll(images=>Promise.all(images.map(img=>img.decode())));
+  await page.locator('#growth-tab').click();
+  await expect(page.locator('#projections')).toContainText('80,000');
+  expect(errors).toEqual([]);
+});
 
 test('la portada, los recursos y las anclas cargan sin errores', async ({ page }) => {
   const errors=[];

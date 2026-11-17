@@ -4,13 +4,12 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --host 127.0.0.1",
-    "build": "vite build",
-    "preview": "vite preview --host 127.0.0.1",
+    "dev": "node scripts/serve.mjs",
+    "build": "node scripts/build.mjs",
+    "preview": "node scripts/serve.mjs --dist",
     "test": "playwright test"
   },
   "devDependencies": {
-    "@playwright/test": "^1.56.1",
-    "vite": "^7.2.2"
+    "@playwright/test": "^1.56.1"
   }
 }
